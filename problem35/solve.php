@@ -24,16 +24,28 @@ function primesBelow($maximum) {
 
 $primes = primesBelow(1000000);
 
-function checkCircularPrime($prime) {
-    global $primes;
-    $prime = (string)$prime;
+function checkPrime($num) {
+  global $primes;
+  return in_array($num,$primes);
+}
 
-    for($i = 0; $i < )
+function checkCircularPrime($num, $left) {
+    if (count($left) == 0) return checkPrime(implode("",$num));
+    $res = true;
+    for($j =0; $j < count($left); $j++) {
+         $newNum = $num;
+         $newNum[] = $left[$j];
+         $newLeft = $left;
+         unset($newLeft[$j]);
+         $res = checkCircularPrime($newNum,$newLeft);
+    }
+    return $res;
 }
 
 $sum = 0;
 for($i = 0; $i < count($primes); $i++) {
-    if (checkCircularPrime($prime)) $sum++;
+    $prime = str_split($primes[$i]);
+    if (checkCircularPrime(array(), $prime)) $sum++;
 }
 
 echo $sum;
