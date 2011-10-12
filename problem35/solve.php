@@ -22,7 +22,7 @@ function primesBelow($maximum) {
     return $primes;
 }
 
-$primes = primesBelow(1000000);
+$primes = primesBelow(100);
 
 function checkPrime($num) {
   global $primes;
@@ -30,13 +30,32 @@ function checkPrime($num) {
 }
 
 function checkCircularPrime($num, $left) {
-    if (count($left) == 0) return checkPrime(implode("",$num));
+    global $primes;
+    if (count($left) == 0) {
+
+    $prime = implode("",$num);
+
+    if(!checkPrime($prime)) {
+        for($i=0;$i<count($primes);$i++){
+            if ($primes[$i] == $prime) {
+               $primes[$i] = 0;
+
+               return false;
+            }
+        }
+    } 
+    return true;   
+    }
     $res = true;
-    for($j =0; $j < count($left); $j++) {
+    for($j = 0; $j < count($left); $j++) {
+//  var_dump($num);
+//var_dump($left);
          $newNum = $num;
          $newNum[] = $left[$j];
          $newLeft = $left;
-         unset($newLeft[$j]);
+         array_splice($newLeft,$j,1);
+
+//var_dump($newNum);var_dump($newLeft);
          $res = checkCircularPrime($newNum,$newLeft);
     }
     return $res;
@@ -44,6 +63,9 @@ function checkCircularPrime($num, $left) {
 
 $sum = 0;
 for($i = 0; $i < count($primes); $i++) {
+if ($primes[$i] == 0) continue;
+echo "checking ".$primes[$i]."\n";
+
     $prime = str_split($primes[$i]);
     if (checkCircularPrime(array(), $prime)) $sum++;
 }
